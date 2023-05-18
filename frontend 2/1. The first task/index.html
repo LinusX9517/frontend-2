@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+		.highlight {
+			filter: brightness(120%);
+		}
+        .container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 20px; /* adjust this to your desired margin */
+        }
+	</style>
+	<script>
+		function highlightImage(id) {
+			document.getElementById(id).classList.add("highlight");
+		}
+
+		function unhighlightImage(id) {
+			document.getElementById(id).classList.remove("highlight");
+		}
+	</script>
+    <title>Image Map</title>
+</head>
+<body>
+    <div class="container">
+        <img id="example-image" src="https://cdn140.picsart.com/350845939040211.png" alt="Example Image" usemap="#image-map">
+
+        <map name="image-map">
+            <area target="" alt="body" title="body" href="#" coords="250,790,281,805,310,807,348,808,402,798,391,639,457,630,483,784,517,767,523,772,603,755,666,699,690,612,704,545,702,448,694,403,677,366,590,228,567,200,437,131,393,105,409,245,111,337,129,397,116,432,108,489,112,542,123,595,145,642,163,664,182,712,187,683,239,739" shape="poly" onmouseover="highlightImage('example-image')" onmouseout="unhighlightImage('example-image')">
+            <area target="" alt="leg" title="leg" href="https://minecraft-inside.ru/mods/154010-capybara.html" coords="113,851,165,821,187,683,239,740,251,789,228,836,219,859" shape="poly" onmouseover="highlightImage('example-image')" onmouseout="unhighlightImage('example-image')">
+            <area target="" alt="leg" title="leg" href="https://minecraft-inside.ru/mods/154010-capybara.html" coords="390,639,459,630,482,788,499,848,475,832,482,866,454,854,428,866,416,851,377,860,400,838,406,816" shape="poly" onmouseover="highlightImage('example-image')" onmouseout="unhighlightImage('example-image')">
+            <area target="" alt="leg" title="leg" href="https://minecraft-inside.ru/mods/154010-capybara.html" coords="601,755,612,792,604,805,589,803,575,811,548,797,534,802,526,796,522,774" shape="poly" onmouseover="highlightImage('example-image')" onmouseout="unhighlightImage('example-image')">
+            <area target="" alt="head" title="head" href="https://minecraft-heads.com/custom-heads/animals/50044-capybara" coords="408,246,393,107,362,71,364,18,336,21,294,10,249,16,230,1,207,24,155,42,88,87,55,129,2,190,5,229,13,270,38,323,51,319,73,334,115,338" shape="poly" onmouseover="highlightImage('example-image')" onmouseout="unhighlightImage('example-image')">
+        </map>
+    </div>
+</body>
+</html>

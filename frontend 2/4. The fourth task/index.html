@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html,
+      body {
+        height: 100%;
+        margin: 20px;
+        padding: 0;
+        overflow: hidden;
+      }
+      #map {
+        width: 100%;
+        height: 65%;
+        margin-top: 5%;
+      }
+      .button {
+        cursor: pointer;
+        padding: 10px 10px;
+        background-color: #4e4e4e;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        width: 100px;
+        height: 20px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .button:hover {
+        background-color: #9b9b9b;
+      }
+      #coords-container {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      .way-item {
+        margin-right: 10px;
+        padding: 5px 10px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <base target="_blank" />
+    <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+    <div id="removelastcoord" class="button" onclick="removelastcoord()">Отменить</div>
+    <div id="clearmap" class="button" onclick="clearmap()">Очистка</div>
+    <div id="saveway" class="button" onclick="saveway()">Save Way</div>
+    Координаты последних маркеров: <span id="clicked_element"></span>
+    <div id="coords-container"></div>
+    <div id="map"></div>
+
+    <script type="text/javascript">
+      function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      var map;
+      var colors = ["blue", "green", "red"];
+      var coords = [];
+      var polyline;
+      let ways = [];
+      clickedElement = document.getElementById("clicked_element");
+      coordsContainer = document.getElementById("coords-container");
+
+      DG.then(function () {
+        map = DG.map("map", {
+          center: [53.20869, 50.124636],
+          zoom: 15,
+        });
+        map.on("click", function (e) {
+          coords.push([e.latlng.lat, e.latlng.lng]);
+          if (!polyline) {
+            polyline = DG.polyline(coords, {
+              color: colors[getRandomInt(0, colors.length - 1)],
+            }).addTo(map);
+          } else {
+            polyline.setLatLngs(coords).redraw();
+          }
+          clickedElement.innerHTML +=
+            "[" + e.latlng.lat + ", " + e.latlng.lng + "]";
+          DG.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+        });
+      });
+
+      var removelastcoord = () => {
+        DG.then(function () {
+          coords.pop();
+          console.log(coords);
+          polyline.setLatLngs(coords).redraw();
+        });
+      };
+
+      var saveway = () => {
+        DG.then(function () {
+          var wayName = prompt("Name?", "Type here...");
+          if (wayName) {
+            ways.push({ name: wayName, coords: coords });
+            coords.forEach((coord) => {
+              DG.marker(coord).addTo(map);
+            });
+            coords = [];
+            console.log(ways);
+            polyline.setLatLngs(coords).redraw();
+            addCoordsToContainer();
+          }
+        });
+      };
+
+      function addCoordsToContainer() {
+        coordsContainer.innerHTML = "";
+        ways.forEach((way) => {
+          var wayDiv = document.createElement("div");
+          wayDiv.classList.add("way-item");
+
+          var nameSpan = document.createElement("span");
+          nameSpan.innerText = way.name + ":";
+          wayDiv.appendChild(nameSpan);
+
+          var coordsSpan = document.createElement("span");
+          coordsSpan.innerText = way.coords
+            .map((coord) => "[" + coord[0] + ", " + coord[1] + "]")
+            .join(", ");
+          wayDiv.appendChild(coordsSpan);
+
+          coordsContainer.appendChild(wayDiv);
+        });
+      }
+
+      addCoordsToContainer();
+
+      var clearmap = () => {
+        DG.then(function () {
+          coords = [];
+          polyline.setLatLngs(coords).redraw();
+          map.eachLayer(function (layer) {
+            if (layer instanceof DG.Marker) {
+              map.removeLayer(layer);
+            }
+          });
+          clickedElement.innerHTML = "";
+          ways = [];
+          addCoordsToContainer();
+        });
+      };
+    </script>
+  </body>
+</html>
